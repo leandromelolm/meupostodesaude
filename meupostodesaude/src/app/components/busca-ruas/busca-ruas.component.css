@@ -1,0 +1,292 @@
+/* Busca Ruas Section */
+.busca-ruas-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+/* Search Container */
+.search-container {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.search-container h2 {
+  font-size: 2.5rem;
+  color: white;
+  margin: 0 0 2rem 0;
+  font-weight: 700;
+}
+
+.search-box {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 75%;
+  padding: 1rem 3rem 1rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.search-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  color: #667eea;
+  pointer-events: none;
+}
+
+/* Results Container */
+.results-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* No Results */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 1.125rem;
+}
+
+/* Ruas List */
+.ruas-list {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.rua-item {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.rua-item:last-child {
+  border-bottom: none;
+}
+
+.rua-item:hover {
+  background-color: #f7fafc;
+  transform: translateX(5px);
+}
+
+.rua-item.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.rua-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.rua-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.bairro-badge {
+  background: #667eea;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.rua-item.selected .bairro-badge {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.rua-location {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #718096;
+}
+
+.rua-item.selected .rua-location {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Rua Detalhes */
+.rua-detalhes {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.detalhes-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detalhes-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.detalhes-content {
+  padding: 2rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.detalhes-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.detalhes-item {
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1.5rem;
+}
+
+.detalhes-item:last-child {
+  border-bottom: none;
+}
+
+.detalhes-item h4 {
+  font-size: 1.125rem;
+  color: #667eea;
+  margin: 0 0 0.75rem 0;
+  font-weight: 600;
+}
+
+.detalhes-item p {
+  margin: 0.5rem 0;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.cep {
+  font-size: 0.95rem;
+  color: #718096;
+  font-weight: 500;
+}
+
+.pontos-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pontos-lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  color: #4a5568;
+}
+
+.icon-check {
+  width: 20px;
+  height: 20px;
+  color: #48bb78;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .results-container {
+    grid-template-columns: 1fr;
+  }
+
+  .rua-detalhes {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .busca-ruas-section {
+    padding: 2rem 1rem;
+  }
+
+  .search-container h2 {
+    font-size: 2rem;
+  }
+
+  .ruas-list {
+    max-height: 400px;
+  }
+
+  .rua-detalhes {
+    max-height: 400px;
+  }
+
+  .detalhes-content {
+    max-height: 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .rua-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .bairro-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
