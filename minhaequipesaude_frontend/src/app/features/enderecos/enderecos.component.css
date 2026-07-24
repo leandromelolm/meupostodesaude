@@ -475,32 +475,31 @@
   color: #1f2937;
 }
 
+.bg_info {
+  background-color: #f3f4f6;
+}
+
 .classe-micro-1 {
-  background-color: #f0fdfa;
   border-left: 6px solid #06b6d4;
   color: #0083a3;
 }
 
 .classe-micro-2 {
-  background-color: #e0f2fe;
   border-left: 0.375rem solid #38bdf8;
   color: #0369a1;
 }
 
 .classe-micro-3 {
-  background-color: #dbeafe;
   border-left: 6px solid #2563eb;
   color: #1e40af;
 }
 
 .classe-micro-4 {
-  background-color: #e0e7ff;
   border-left: 6px solid #4f46e5;
   color: #3730a3;
 }
 
 .classe-micro-5 {
-  background-color: #eff6ff;
   border-left: 6px solid #1d4ed8;
   color: #1e3a8a;
 }

@@ -98,18 +98,20 @@
           </div>
         </div>
 
-        <div [class]="'classe-micro-' + (endereco?.micro?.split(' ')?.pop() || '')"
-          class="d_flex detalhe_endereco align-item-center acs-clickable" (click)="abrirDetalhesAcs($event, endereco)"
-          title="Clique para ver os detalhes do Agente de Saúde">
-          <div class="div__acs_txt">Agente de Saúde:</div>
-          <div class="div__acs">{{ endereco.acs }}</div>
-        </div>
-
         @if (endereco.aviso) {
         <div class="aviso-alerta detalhe_endereco">
           <strong>Atenção: </strong>{{ endereco.aviso }}
         </div>
         }
+
+        <div [class]="'classe-micro-' + (endereco?.micro?.split(' ')?.pop() || '')"
+          class="d_flex detalhe_endereco align-item-center acs-clickable bg_info"
+          (click)="abrirDetalhesAcs($event, endereco)" title="Clique para ver os detalhes do Agente de Saúde">
+          <div class="div__acs_txt">Agente de Saúde:</div>
+          <div class="div__acs">{{ endereco.acs }}</div>
+        </div>
+
+
 
       </div>
       }
