@@ -1,5 +1,5 @@
-import { Component, computed, inject, input, signal, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, computed, inject, input, signal, OnInit, OnDestroy, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, isPlatformBrowser, ViewportScroller } from '@angular/common';
 import { Profissional } from './models/profissional.model';
 import { ProfissionaisService } from './services/profissionais.service';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,11 @@ import { ProfissionalDetalhesComponent } from '../profissional-detalhes/profissi
   styleUrl: './profissionais.component.css'
 })
 export class ProfissionaisComponent implements OnInit, OnDestroy {
+
+  private viewportScroller = inject(ViewportScroller);
+  private cdr = inject(ChangeDetectorRef);
+
+  private readonly SCROLL_KEY = 'scroll_posicao_profissionais';
 
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
@@ -39,7 +44,7 @@ export class ProfissionaisComponent implements OnInit, OnDestroy {
     }
   }
 
-  private carregarDados() {
+  carregarDados() {
     this.carregando.set(true);
     this.sub = this.profissionalService.getProfissionais().subscribe({
       next: (dados) => {
@@ -56,7 +61,7 @@ export class ProfissionaisComponent implements OnInit, OnDestroy {
   membrosFiltrados = computed(() => {
     const apelidoAlvo = String(this.equipeApelido() || '').trim();
     const membros = this.todosMembros();
-
+    this.restaurarScroll();
     if (!apelidoAlvo) {
       return membros;
     }
@@ -69,12 +74,43 @@ export class ProfissionaisComponent implements OnInit, OnDestroy {
     return apelido ? `${apelido}` : 'Geral';
   });
 
-  abrirComponenteProfissionalDetalhes(status: boolean, profissional?: Profissional): void {
-    this.exibirComponenteProfissionalDetalhes = status;
-    if (status && profissional) {
-      this.profissionalSelecionado = profissional;
-    } else if (!status) {
-      this.profissionalSelecionado = null;
+  abrirComponenteProfissionalDetalhes(exibir: boolean, membro?: any) {
+    if (exibir) {
+      const [x, y] = this.viewportScroller.getScrollPosition();
+      sessionStorage.setItem(this.SCROLL_KEY, y.toString());
+
+      this.profissionalSelecionado = membro;
+      this.exibirComponenteProfissionalDetalhes = true;
+
+      this.viewportScroller.scrollToPosition([0, 0]);
+    } else {
+      this.exibirComponenteProfissionalDetalhes = false;
+
+      // Força o Angular a reconstruir o HTML do @if (!exibirComponenteProfissionalDetalhes)
+      this.cdr.detectChanges();
+
+      // Restaura o scroll após o Angular injetar os cards no DOM
+      this.restaurarScroll();
+    }
+  }
+
+  salvarPosicaoScroll() {
+    const posicaoAtual = this.viewportScroller.getScrollPosition();
+    sessionStorage.setItem(this.SCROLL_KEY, JSON.stringify(posicaoAtual));
+  }
+
+  restaurarScroll() {
+    const posicaoSalva = sessionStorage.getItem(this.SCROLL_KEY);
+
+    if (posicaoSalva) {
+      const scrollY = Number(posicaoSalva);
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollY,
+          behavior: 'instant'
+        });
+      }, 50);
     }
   }
 

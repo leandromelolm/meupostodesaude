@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { CommonModule, isPlatformBrowser, ViewportScroller } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Endereco } from './models/endereco.model';
 import { EnderecosService } from './services/enderecos.service';
@@ -22,14 +22,16 @@ import { finalize, Observable, of, Subscription } from 'rxjs';
 export class EnderecosComponent implements OnInit {
 
   private platformId = inject(PLATFORM_ID);
+
   private enderecoService = inject(EnderecosService);
-  private profissionaisService = inject(ProfissionaisService); // Injectar serviço de profissionais
+  private profissionaisService = inject(ProfissionaisService);
+
+  private readonly SCROLL_KEY = 'posicao_scroll_meu_componente';
 
   termoBusca: string = '';
   numeroBusca: string = '';
   enderecoSelecionado: Endereco | null = null;
 
-  // Propriedades para controle da exibição dos detalhes do ACS
   profissionalSelecionado: Profissional | null = null;
   exibirProfissionalDetalhes: boolean = false;
 
@@ -38,12 +40,16 @@ export class EnderecosComponent implements OnInit {
 
   carregandoApi: boolean = false;
   buscaApiSemResultado: boolean = false;
-  private timeoutBuscaId: any;
+  timeoutBuscaId: any;
 
   listaDeEnderecos: Endereco[] = [];
+  @ViewChild('ruasList') ruasListElement!: ElementRef<HTMLDivElement>;
+  private scrollPosicaoSalva: number = 0;
+
+
   private sub!: Subscription;
 
-  constructor() { }
+  constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.carregarDadosIniciais();
@@ -59,6 +65,10 @@ export class EnderecosComponent implements OnInit {
   abrirDetalhesAcs(event: MouseEvent, endereco: Endereco): void {
     // Evita a seleção da rua no card pai ao clicar no botão do ACS
     event.stopPropagation();
+
+    if (this.ruasListElement) {
+      this.scrollPosicaoSalva = this.ruasListElement.nativeElement.scrollTop;
+    }
 
     if (!endereco.acs || !endereco.micro) return;
 
@@ -88,6 +98,14 @@ export class EnderecosComponent implements OnInit {
   fecharDetalhesAcs(): void {
     this.exibirProfissionalDetalhes = false;
     this.profissionalSelecionado = null;
+    this.cdr.detectChanges();
+
+    // Aplica a restauração após a renderização
+    setTimeout(() => {
+      if (this.ruasListElement) {
+        this.ruasListElement.nativeElement.scrollTop = this.scrollPosicaoSalva;
+      }
+    }, 0);
   }
 
   buscar(): void {

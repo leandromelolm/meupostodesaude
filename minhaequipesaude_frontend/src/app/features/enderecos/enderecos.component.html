@@ -72,7 +72,7 @@
 
     @if (enderecos$ | async; as listaEnderecos) {
 
-    <div class="ruas-list">
+    <div class="ruas-list" #ruasList>
 
       @if (listaEnderecos.length === 0) {
       <div class="no-results">
