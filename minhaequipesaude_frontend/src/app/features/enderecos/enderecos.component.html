@@ -1,4 +1,4 @@
-<section class="buscar-endereco-section">
+<section class="buscar-endereco-section sem-selecao">
   <div class="search-container" *ngIf="!exibirProfissionalDetalhes">
     <div class="search-box">
       <div class="search-wrapper flex-column-gap">
@@ -88,16 +88,6 @@
           <span class="bairro-badge">{{ endereco.micro }}</span>
         </div>
 
-        <div>
-          <div class="classe-info-logradouro detalhe_endereco">
-            <span class="rua-location">{{ endereco.bairro }}</span>
-            @if (endereco.cep) {
-            <div class="rua-location">CEP:{{ endereco.cep }}</div>
-            }
-            <p class="rua-location">Equipe {{ endereco.equipe_vinculada }}</p>
-          </div>
-        </div>
-
         @if (endereco.aviso) {
         <div class="aviso-alerta detalhe_endereco">
           <strong>Atenção: </strong>{{ endereco.aviso }}
@@ -111,7 +101,15 @@
           <div class="div__acs">{{ endereco.acs }}</div>
         </div>
 
-
+        <div>
+          <div class="classe-info-logradouro detalhe_endereco permitir-selecao">
+            <span class="rua-location">{{ endereco.bairro }}</span>
+            @if (endereco.cep) {
+            <div class="rua-location">CEP:{{ endereco.cep }}</div>
+            }
+            <p class="rua-location">Equipe {{ endereco.equipe_vinculada }}</p>
+          </div>
+        </div>
 
       </div>
       }
