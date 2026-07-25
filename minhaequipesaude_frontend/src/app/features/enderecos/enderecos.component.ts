@@ -66,6 +66,8 @@ export class EnderecosComponent implements OnInit {
     // Evita a seleção da rua no card pai ao clicar no botão do ACS
     event.stopPropagation();
 
+    this.selecionarRua(endereco)
+
     if (this.ruasListElement) {
       this.scrollPosicaoSalva = this.ruasListElement.nativeElement.scrollTop;
     }
