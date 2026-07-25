@@ -64,5 +64,12 @@
   </div>
   }
 
-
 </section>
+
+@if (!esconder) {
+<div>
+  <app-float-button [bottom]="100" (buttonClick)="topoPagina()">
+    <img class="ico" src="/assets/images/vertical_align_top.svg" alt="topo-pagina">
+  </app-float-button>
+</div>
+}

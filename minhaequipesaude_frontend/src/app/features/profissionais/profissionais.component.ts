@@ -1,16 +1,17 @@
-import { Component, computed, inject, input, signal, OnInit, OnDestroy, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { Component, computed, inject, input, signal, OnInit, OnDestroy, PLATFORM_ID, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser, ViewportScroller } from '@angular/common';
 import { Profissional } from './models/profissional.model';
 import { ProfissionaisService } from './services/profissionais.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProfissionalDetalhesComponent } from '../profissional-detalhes/profissional-detalhes.component';
+import { FloatButtonComponent } from '../../components/float-button/float-button.component';
 
 
 @Component({
   selector: 'app-profissionais',
   standalone: true,
-  imports: [CommonModule, ProfissionalDetalhesComponent],
+  imports: [CommonModule, ProfissionalDetalhesComponent, FloatButtonComponent],
   templateUrl: './profissionais.component.html',
   styleUrl: './profissionais.component.css'
 })
@@ -33,7 +34,11 @@ export class ProfissionaisComponent implements OnInit, OnDestroy {
   carregando = signal<boolean>(true);
   exibirComponenteProfissionalDetalhes: boolean = false;
 
+  posicaoScroll: number = 0;
+  esconder: boolean = true;
+
   private sub: Subscription | null = null;
+
 
   ngOnInit(): void {
     if (this.router.url === '/' || this.router.url === '') {
@@ -42,6 +47,12 @@ export class ProfissionaisComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.carregarDados();
     }
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    this.posicaoScroll = window.scrollY || document.documentElement.scrollTop;
+    this.esconder = this.posicaoScroll <= 150;
   }
 
   carregarDados() {
@@ -113,6 +124,15 @@ export class ProfissionaisComponent implements OnInit, OnDestroy {
       }, 50);
     }
   }
+
+  topoPagina(): void {
+    sessionStorage.setItem(this.SCROLL_KEY, JSON.stringify(0));
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
 
   ngOnDestroy(): void {
     if (this.sub) {
