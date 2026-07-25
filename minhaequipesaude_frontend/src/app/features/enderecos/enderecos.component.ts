@@ -6,7 +6,7 @@ import { EnderecosService } from './services/enderecos.service';
 import { ProfissionaisService } from '../profissionais/services/profissionais.service'; // Importar
 import { Profissional } from '../profissionais/models/profissional.model'; // Importar
 import { ProfissionalDetalhesComponent } from '../profissional-detalhes/profissional-detalhes.component'; // Importar
-import { finalize, Observable, of, Subscription } from 'rxjs';
+import { finalize, Observable, of, shareReplay, Subscription, tap } from 'rxjs';
 
 @Component({
   selector: 'app-enderecos',
@@ -58,7 +58,8 @@ export class EnderecosComponent implements OnInit {
   private carregarDadosIniciais(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.buscaApiSemResultado = false;
-      this.enderecos$ = this.enderecoService.getEnderecos();
+      this.enderecos$ = this.enderecoService.getEnderecos().pipe(
+        shareReplay(1));
     }
   }
 
