@@ -101,6 +101,7 @@ export class EnderecosComponent implements OnInit {
     this.exibirProfissionalDetalhes = false;
     this.profissionalSelecionado = null;
     this.cdr.detectChanges();
+    this.carregarDadosIniciais();
 
     // Aplica a restauração após a renderização
     setTimeout(() => {
