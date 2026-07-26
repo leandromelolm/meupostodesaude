@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, HostListener } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -6,6 +7,16 @@ import { RouterModule } from '@angular/router';
   templateUrl: './menu-desktop.component.html',
   styleUrls: ['./menu-desktop.component.css'],
   standalone: true,
-  imports: [RouterModule]
+  imports: [RouterModule, NgClass]
 })
-export class MenuDesktopComponent {}
+export class MenuDesktopComponent {
+
+  isScrolled = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+
+    this.isScrolled = scrollPosition > 100;
+  }
+}
