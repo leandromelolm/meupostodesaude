@@ -2,133 +2,168 @@
   <div class="search-container" *ngIf="!exibirProfissionalDetalhes">
     <div class="search-box">
       <div class="search-wrapper flex-column-gap">
-
-        <input type="text" placeholder="Digite a rua, avenida, travessa..." [(ngModel)]="termoBusca" (input)="buscar()"
-          class="search-input" list="ruas-sugeridas" />
+        <input
+          type="text"
+          placeholder="Digite a rua, avenida, travessa..."
+          [(ngModel)]="termoBusca"
+          (input)="buscar()"
+          class="search-input"
+          list="ruas-sugeridas"
+        />
 
         <datalist id="ruas-sugeridas">
-          <option *ngFor="let endereco of (enderecos$ | async)" [value]="endereco.logradouro">
+          <option
+            *ngFor="let endereco of enderecos$ | async"
+            [value]="endereco.logradouro"
+          ></option>
         </datalist>
 
-        <div class="search-actions-container" *ngIf="termoBusca.trim().length > 5 || termoBusca || numeroBusca">
-
-          <input *ngIf="termoBusca.trim().length > 5" type="text" placeholder="Número" [(ngModel)]="numeroBusca"
-            class="search-input input-numero" (keyup.enter)="dispararBuscaExata()" />
+        <div
+          class="search-actions-container"
+          *ngIf="termoBusca.trim().length > 5 || termoBusca || numeroBusca"
+        >
+          <input
+            *ngIf="termoBusca.trim().length > 5"
+            type="text"
+            placeholder="Número"
+            [(ngModel)]="numeroBusca"
+            class="search-input input-numero"
+            (keyup.enter)="dispararBuscaExata()"
+          />
 
           <div class="search-actions-new">
-            <button *ngIf="termoBusca || numeroBusca" class="action-btn clear-btn-new" (click)="limparBusca()"
-              title="Limpar pesquisa">
+            <button
+              *ngIf="termoBusca || numeroBusca"
+              class="action-btn clear-btn-new"
+              (click)="limparBusca()"
+              title="Limpar pesquisa"
+            >
               <span class="clear-icon">&times;</span>
             </button>
 
-            <button *ngIf="numeroBusca.trim().length >= 2" class="action-btn submit-btn-new"
-              [class.loading-active]="carregandoApi" [disabled]="carregandoApi" (click)="dispararBuscaExata()"
-              title="Buscar endereço exato">
-              <img *ngIf="!carregandoApi" src="/assets/images/icon-arrow.svg" alt="pesquisar" class="icon-arrow">
+            <button
+              *ngIf="numeroBusca.trim().length >= 2"
+              class="action-btn submit-btn-new"
+              [class.loading-active]="carregandoApi"
+              [disabled]="carregandoApi"
+              (click)="dispararBuscaExata()"
+              title="Buscar endereço exato"
+            >
+              <img
+                *ngIf="!carregandoApi"
+                src="/assets/images/icon-arrow.svg"
+                alt="pesquisar"
+                class="icon-arrow"
+              />
               <span *ngIf="carregandoApi" class="btn-spinner"></span>
             </button>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
 
   @if (exibirProfissionalDetalhes && profissionalSelecionado) {
-  <div class="container-detalhes-acs">
-    <div class="div__voltar">
-      <a (click)="fecharDetalhesAcs()" class="btn-voltar">
-        <div class="team-info-back">
-          <img src="/assets/images/undo_24dp_FFF.svg" alt="Voltar">
-          <h3>Voltar para busca</h3>
-        </div>
-      </a>
-    </div>
+    <div class="container-detalhes-acs">
+      <div class="div__voltar">
+        <a (click)="fecharDetalhesAcs()" class="btn-voltar">
+          <div class="team-info-back">
+            <img src="/assets/images/undo_24dp_FFF.svg" alt="Voltar" />
+            <h3>Voltar para busca</h3>
+          </div>
+        </a>
+      </div>
 
-    <app-profissional-detalhes [profissional]="profissionalSelecionado" [logradouroInicial]="logradouroSelecionadoAcs">
-    </app-profissional-detalhes>
-  </div>
+      <app-profissional-detalhes
+        [profissional]="profissionalSelecionado"
+        [logradouroInicial]="logradouroSelecionadoAcs"
+      >
+      </app-profissional-detalhes>
+    </div>
   } @else {
-
-  <div class="results-container">
-
-    @if (carregandoApi) {
-    <div class="results-loading-wrapper">
-      <div class="loading-container">
-        <div class="spinner"></div>
-        <p>Carregando endereço... Por favor, aguarde.</p>
-      </div>
-    </div>
-    } @else {
-
-    @if (buscaApiSemResultado) {
-    <div class="no-results api-error">
-      <i class="icon icon-warning"></i>
-      <p>Nenhum endereço exato correspondente foi encontrado para o termo informado.</p>
-      <p class="sub-text">Verifique o nome do endereço e os números digitados.</p>
-    </div>
-    } @else {
-
-    @if (enderecos$ | async; as listaEnderecos) {
-
-    <div class="ruas-list" #ruasList>
-
-      @if (listaEnderecos.length === 0) {
-      <div class="no-results">
-        <p>Nenhuma rua encontrada. Tente outro termo de busca.</p>
-      </div>
-      }
-
-      @for (endereco of listaEnderecos; track endereco.id) {
-      <div class="rua-item" [class.selected]="enderecoSelecionado?.id === endereco.id">
-
-        <div class="rua-header" (click)="selecionarRua(endereco)">
-          <h3>{{ endereco.logradouro }}</h3>
-          <span class="bairro-badge">{{ endereco.micro }}</span>
-        </div>
-
-        @if (endereco.aviso) {
-        <div class="aviso-alerta detalhe_endereco">
-          <strong>Atenção: </strong>{{ endereco.aviso }}
-        </div>
-        }
-
-        <div [class]="'classe-micro-' + (endereco?.micro?.split(' ')?.pop() || '')"
-          class="d_flex detalhe_endereco align-item-center acs-clickable bg_info"
-          (click)="abrirDetalhesAcs($event, endereco)" title="Clique para ver os detalhes do Agente de Saúde">
-          <div class="div__acs_txt">Agente de Saúde:</div>
-          <div class="div__acs">{{ endereco.acs }}</div>
-        </div>
-
-        <div>
-          <div class="classe-info-logradouro detalhe_endereco permitir-selecao">
-            <span class="rua-location">{{ endereco.bairro }}</span>
-            @if (endereco.cep) {
-            <div class="rua-location">CEP:{{ endereco.cep }}</div>
-            }
-            <p class="rua-location">Equipe {{ endereco.equipe_vinculada }}</p>
+    <div class="results-container">
+      @if (carregandoApi) {
+        <div class="results-loading-wrapper">
+          <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Carregando endereço... Por favor, aguarde.</p>
           </div>
         </div>
+      } @else {
+        @if (buscaApiSemResultado) {
+          <div class="no-results api-error">
+            <i class="icon icon-warning"></i>
+            <p>
+              Nenhum endereço exato correspondente foi encontrado para o termo
+              informado.
+            </p>
+            <p class="sub-text">
+              Verifique o nome do endereço e os números digitados.
+            </p>
+          </div>
+        } @else {
+          @if (enderecos$ | async; as listaEnderecos) {
+            <div class="ruas-list" #ruasList>
+              @if (listaEnderecos.length === 0) {
+                <div class="no-results">
+                  <p>Nenhuma rua encontrada. Tente outro termo de busca.</p>
+                </div>
+              }
 
-      </div>
+              @for (endereco of listaEnderecos; track endereco.id) {
+                <div
+                  class="rua-item"
+                  [class.selected]="enderecoSelecionado?.id === endereco.id"
+                >
+                  <div class="rua-header" (click)="selecionarRua(endereco)">
+                    <h3>{{ endereco.logradouro }}</h3>
+                    <span class="bairro-badge">{{ endereco.micro }}</span>
+                  </div>
+
+                  @if (endereco.aviso) {
+                    <div class="aviso-alerta detalhe_endereco">
+                      <strong>Atenção: </strong>{{ endereco.aviso }}
+                    </div>
+                  }
+
+                  <div
+                    [class]="
+                      'classe-micro-' +
+                      (endereco?.micro?.split(' ')?.pop() || '')
+                    "
+                    class="d_flex detalhe_endereco align-item-center acs-clickable bg_info"
+                    (click)="abrirDetalhesAcs($event, endereco)"
+                    title="Clique para ver os detalhes do Agente de Saúde"
+                  >
+                    <div class="div__acs_txt">Agente de Saúde:</div>
+                    <div class="div__acs">{{ endereco.acs }}</div>
+                  </div>
+
+                  <div>
+                    <div
+                      class="classe-info-logradouro detalhe_endereco permitir-selecao"
+                    >
+                      <span class="rua-location">{{ endereco.bairro }}</span>
+                      @if (endereco.cep) {
+                        <div class="rua-location">CEP:{{ endereco.cep }}</div>
+                      }
+                      <p class="rua-location">
+                        Equipe {{ endereco.equipe_vinculada }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="loading-container">
+              <div class="spinner"></div>
+              <p>Carregando endereço... Por favor, aguarde.</p>
+            </div>
+          }
+        }
       }
-
     </div>
-
-    } @else {
-    <div class="loading-container">
-      <div class="spinner"></div>
-      <p>Carregando endereço... Por favor, aguarde.</p>
-    </div>
-    }
-
-    }
-
-    }
-
-  </div>
-
   }
 
   <div *ngIf="enderecoSelecionado" class="rua-detalhes d__none">
