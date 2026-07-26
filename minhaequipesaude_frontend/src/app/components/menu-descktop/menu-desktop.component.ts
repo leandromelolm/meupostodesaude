@@ -1,22 +1,36 @@
-import { NgClass } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { NgClass } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-menu-desktop',
-  templateUrl: './menu-desktop.component.html',
-  styleUrls: ['./menu-desktop.component.css'],
   standalone: true,
-  imports: [RouterModule, NgClass]
+  imports: [NgClass, RouterLink, RouterLinkActive],
+  templateUrl: './menu-desktop.component.html',
+  styleUrl: './menu-desktop.component.css'
 })
 export class MenuDesktopComponent {
-
   isScrolled = false;
+  isHidden = false;
+  private lastScrollPosition = 0;
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+    const currentScroll = window.scrollY || document.documentElement.scrollTop;
 
-    this.isScrolled = scrollPosition > 100;
+    if (currentScroll > 100) {
+      this.isScrolled = true;
+
+      if (currentScroll > this.lastScrollPosition) {
+        this.isHidden = true;
+      } else {
+        this.isHidden = false;
+      }
+    } else {
+      this.isScrolled = false;
+      this.isHidden = false;
+    }
+
+    this.lastScrollPosition = currentScroll;
   }
 }

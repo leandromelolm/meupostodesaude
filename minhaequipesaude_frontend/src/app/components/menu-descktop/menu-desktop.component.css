@@ -14,19 +14,24 @@
   background: white;
   padding: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: relative;
   top: 0;
+  width: 100%;
   z-index: 100;
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease;
 }
 
 .navbar.scrolled {
-  background: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: fixed;
-  width: 100%;
   top: 0;
-  z-index: 100;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+}
 
+.navbar.scrolled.menu-hidden {
+  transform: translateY(-100%);
 }
 
 .nav-container {

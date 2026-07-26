@@ -1,5 +1,8 @@
 <aside class="sidebar-desktop">
-  <nav class="navbar" [ngClass]="{ 'scrolled': isScrolled }">
+  <nav class="navbar" [ngClass]="{ 
+      'scrolled': isScrolled, 
+      'menu-hidden': isHidden 
+    }">
     <div class="nav-container">
       <div class="itens__container">
         <div class="nav-title-ico">
@@ -31,5 +34,4 @@
       </div>
     </div>
   </nav>
-
 </aside>
