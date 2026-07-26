@@ -12,6 +12,9 @@
 @media screen and (max-width: 576px) and (orientation: portrait) {
   .search-container {
     position: fixed;
+    width: -moz-available;
+    /* Compatibilidade para WebKit / Chrome e padrão */
+    width: -webkit-fill-available;
     width: stretch;
   }
 
