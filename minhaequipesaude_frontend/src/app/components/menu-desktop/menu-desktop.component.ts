@@ -7,7 +7,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   standalone: true,
   imports: [NgClass, RouterLink, RouterLinkActive],
   templateUrl: './menu-desktop.component.html',
-  styleUrl: './menu-desktop.component.css'
+  styleUrl: './menu-desktop.component.scss'
 })
 export class MenuDesktopComponent {
   isScrolled = false;

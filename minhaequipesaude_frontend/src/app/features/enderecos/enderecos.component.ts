@@ -17,7 +17,7 @@ import { finalize, Observable, of, shareReplay, Subscription, tap } from 'rxjs';
     ProfissionalDetalhesComponent
   ],
   templateUrl: './enderecos.component.html',
-  styleUrl: './enderecos.component.css'
+  styleUrl: './enderecos.component.scss'
 })
 export class EnderecosComponent implements OnInit {
 

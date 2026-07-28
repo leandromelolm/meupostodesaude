@@ -13,7 +13,7 @@ import { FloatButtonComponent } from '../../components/float-button/float-button
   standalone: true,
   imports: [CommonModule, ProfissionalDetalhesComponent, FloatButtonComponent],
   templateUrl: './profissionais.component.html',
-  styleUrl: './profissionais.component.css'
+  styleUrl: './profissionais.component.scss'
 })
 export class ProfissionaisComponent implements OnInit, OnDestroy {
 
