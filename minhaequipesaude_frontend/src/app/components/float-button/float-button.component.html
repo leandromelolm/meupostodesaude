@@ -1,3 +1,9 @@
-<button class="fab-btn" [style.bottom]="bottomStyle" (click)="onClick()">
-    <ng-content></ng-content>
+<button
+  class="fab-btn"
+  [style.bottom]="bottomStyle"
+  [style.height]="heightStyle"
+  [style.border-radius]="borderRadiusStyle"
+  (click)="onClick()"
+>
+  <ng-content></ng-content>
 </button>
