@@ -1,7 +1,7 @@
-@if(isScrolled){
-  <div style="height: 82px;"></div>
-}
 <aside class="sidebar-desktop">
+  @if(isScrolled){
+    <div style="height: 82px;"></div>
+  }
   <nav class="navbar" [ngClass]="{ 
       'scrolled': isScrolled, 
       'menu-hidden': isHidden 
