@@ -7,10 +7,9 @@ import { isPlatformBrowser } from '@angular/common';
 import { ApiResposta } from '../../../shared/models/api-resposta.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EnderecosService {
-
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
   private scriptId = environment.scriptId;
@@ -26,44 +25,73 @@ export class EnderecosService {
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
       const dadosSalvos = sessionStorage.getItem(this.CACHE_KEY);
-      if (dadosSalvos) {
-        this.enderecosSignal.set(JSON.parse(dadosSalvos));
+      if (
+        dadosSalvos &&
+        dadosSalvos !== 'undefined' &&
+        dadosSalvos !== 'null'
+      ) {
+        try {
+          const parsed = JSON.parse(dadosSalvos);
+          if (Array.isArray(parsed)) {
+            this.enderecosSignal.set(parsed);
+          }
+        } catch (e) {
+          sessionStorage.removeItem(this.CACHE_KEY);
+        }
       }
     }
   }
 
   getEnderecos(): Observable<Endereco[]> {
-
     if (isPlatformBrowser(this.platformId)) {
       const dadosSalvos = sessionStorage.getItem(this.CACHE_KEY);
       const ultimaRequisicao = sessionStorage.getItem(this.TIME_KEY);
       const agora = Date.now();
 
-      if (dadosSalvos && ultimaRequisicao) {
+      if (
+        dadosSalvos &&
+        dadosSalvos !== 'undefined' &&
+        dadosSalvos !== 'null' &&
+        ultimaRequisicao
+      ) {
         const tempoDecorrido = agora - parseInt(ultimaRequisicao, 10);
         if (tempoDecorrido < this.CACHE_DURATION_MS) {
-          const dados = JSON.parse(dadosSalvos);
-          this.enderecosSignal.set(dados);
-          return of(dados);
+          try {
+            const dados = JSON.parse(dadosSalvos);
+            if (Array.isArray(dados)) {
+              this.enderecosSignal.set(dados);
+              return of(dados);
+            }
+          } catch (e) {
+            sessionStorage.removeItem(this.CACHE_KEY);
+            sessionStorage.removeItem(this.TIME_KEY);
+          }
         }
       }
     }
 
-    return this.http.get<ApiResposta<Endereco[]>>(`${this.apiUrl}?action=read&sheetnumber=1`).pipe(
-      map(resposta => resposta.data ?? []),
-      map(dadosBrutos => this.removerLogradourosDuplicados(dadosBrutos)),
-      tap(dadosSemDuplicatas => {
-        if (isPlatformBrowser(this.platformId)) {
-          sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(dadosSemDuplicatas));
-          sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
-          this.enderecosSignal.set(dadosSemDuplicatas);
-        }
-      })
-    );
+    return this.http.get<ApiResposta<Endereco[]>>(`${this.apiUrl}?action=read&sheetnumber=1`)
+      .pipe(map((resposta) => resposta?.data ?? []),
+        map((dadosBrutos) => this.removerLogradourosDuplicados(dadosBrutos)),
+        tap((dadosSemDuplicatas) => {
+          if (
+            isPlatformBrowser(this.platformId) &&
+            Array.isArray(dadosSemDuplicatas) &&
+            dadosSemDuplicatas.length > 0
+          ) {
+            sessionStorage.setItem(
+              this.CACHE_KEY,
+              JSON.stringify(dadosSemDuplicatas),
+            );
+            sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
+            this.enderecosSignal.set(dadosSemDuplicatas);
+          }
+        }),
+      );
   }
 
   getRuaById(id: number): Endereco | undefined {
-    return this.enderecosSignal().find(e => e.id === id);
+    return this.enderecosSignal().find((e) => e.id === id);
   }
 
   buscarEndereco(termo: string): Endereco[] {
@@ -72,22 +100,25 @@ export class EnderecosService {
       return listaAtual;
     }
     const termoFormatado = this.padronizarTexto(termo);
-    return listaAtual.filter(e =>
-      this.padronizarTexto(e.logradouro).includes(termoFormatado) ||
-      this.padronizarTexto(e.bairro).includes(termoFormatado) ||
-      this.padronizarTexto(e.cidade).includes(termoFormatado)
+    return listaAtual.filter(
+      (e) =>
+        this.padronizarTexto(e.logradouro).includes(termoFormatado) ||
+        this.padronizarTexto(e.bairro).includes(termoFormatado) ||
+        this.padronizarTexto(e.cidade).includes(termoFormatado),
     );
   }
 
   private padronizarTexto(texto: string): string {
     if (!texto) return '';
     return texto
-      .normalize("NFD") // Separa as letras dos acentos (ex: "í" vira "i" + acento)
-      .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
+      .normalize('NFD') // Separa as letras dos acentos (ex: "í" vira "i" + acento)
+      .replace(/[\u0300-\u036f]/g, '') // Remove os acentos
       .toLowerCase();
   }
 
-  buscarEnderecoPorLogradouroENumero(inputUsuario: string): Observable<Endereco[] | null> {
+  buscarEnderecoPorLogradouroENumero(
+    inputUsuario: string,
+  ): Observable<Endereco[] | null> {
     if (!inputUsuario || !inputUsuario.trim()) {
       return of(null);
     }
@@ -112,12 +143,12 @@ export class EnderecosService {
     const urlBusca = `${this.apiUrl}?action=search&logradouro=${encodeURIComponent(logradouro)}&numero=${encodeURIComponent(numero)}`;
 
     return this.http.get<ApiResposta<Endereco[]>>(urlBusca).pipe(
-      map(resposta => {
+      map((resposta) => {
         if (resposta.success && resposta.data) {
           return resposta.data;
         }
         return null;
-      })
+      }),
     );
   }
 
@@ -126,9 +157,11 @@ export class EnderecosService {
       return [];
     }
     const logradourosUnicosMap = new Map<string, Endereco>();
-    enderecos.forEach(endereco => {
+    enderecos.forEach((endereco) => {
       const logradouroNormalizado = endereco.logradouro.trim().toLowerCase();
-      const microNormalizada = endereco.micro ? endereco.micro.trim().toLowerCase() : '';
+      const microNormalizada = endereco.micro
+        ? endereco.micro.trim().toLowerCase()
+        : '';
       const chaveUnica = `${logradouroNormalizado}|${microNormalizada}`;
       if (!logradourosUnicosMap.has(chaveUnica)) {
         logradourosUnicosMap.set(chaveUnica, endereco);

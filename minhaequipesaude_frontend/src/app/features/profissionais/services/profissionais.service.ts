@@ -28,23 +28,36 @@ export class ProfissionaisService {
       const ultimaRequisicao = sessionStorage.getItem(this.TIME_KEY);
       const agora = Date.now();
 
-      if (dadosSalvos && dadosSalvos !== 'undefined' && ultimaRequisicao) {
+      if (
+        dadosSalvos &&
+        dadosSalvos !== 'undefined' &&
+        dadosSalvos !== 'null' &&
+        ultimaRequisicao
+      ) {
         const tempoDecorrido = agora - parseInt(ultimaRequisicao, 10);
 
         if (tempoDecorrido < this.CACHE_DURATION_MS) {
           try {
-            return of(JSON.parse(dadosSalvos));
+            const parsed = JSON.parse(dadosSalvos);
+            if (Array.isArray(parsed)) {
+              return of(parsed);
+            }
           } catch (e) {
             sessionStorage.removeItem(this.CACHE_KEY);
+            sessionStorage.removeItem(this.TIME_KEY);
           }
         }
       }
     }
 
     return this.http.get<ApiResposta<Profissional[]>>(this.apiUrl).pipe(
-      map((response) => response.data ?? []),
+      map((response) => response?.data ?? []),
       tap((profissionais) => {
-        if (isPlatformBrowser(this.platformId) && profissionais) {
+        if (
+          isPlatformBrowser(this.platformId) &&
+          Array.isArray(profissionais) &&
+          profissionais.length > 0
+        ) {
           sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(profissionais));
           sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
         }
