@@ -4,17 +4,7 @@ import { map, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
-
-interface RespostaBuscaApi {
-  success: boolean;
-  data: Endereco[] | null;
-  message?: string;
-  error?: string;
-}
-
-interface RespostaApi {
-  content: Endereco[];
-}
+import { ApiResposta } from '../../../shared/models/api-resposta.model';
 
 @Injectable({
   providedIn: 'root'
@@ -59,8 +49,8 @@ export class EnderecosService {
       }
     }
 
-    return this.http.get<RespostaApi>(`${this.apiUrl}?action=read&sheetnumber=1`).pipe(
-      map(resposta => resposta.content),
+    return this.http.get<ApiResposta<Endereco[]>>(`${this.apiUrl}?action=read&sheetnumber=1`).pipe(
+      map(resposta => resposta.data ?? []),
       map(dadosBrutos => this.removerLogradourosDuplicados(dadosBrutos)),
       tap(dadosSemDuplicatas => {
         sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(dadosSemDuplicatas));
@@ -119,7 +109,7 @@ export class EnderecosService {
 
     const urlBusca = `${this.apiUrl}?action=search&logradouro=${encodeURIComponent(logradouro)}&numero=${encodeURIComponent(numero)}`;
 
-    return this.http.get<RespostaBuscaApi>(urlBusca).pipe(
+    return this.http.get<ApiResposta<Endereco[]>>(urlBusca).pipe(
       map(resposta => {
         if (resposta.success && resposta.data) {
           return resposta.data;

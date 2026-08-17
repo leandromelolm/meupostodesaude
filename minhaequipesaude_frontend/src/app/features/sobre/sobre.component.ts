@@ -14,7 +14,7 @@ export class SobreComponent {
   redirecionarFaleComSuaEquipe() {
 
     const telefone = '81991171407'
-    const textoMensagem = `ATENDIMENTO`;
+    const textoMensagem = `FALAR COM MINHA EQUIPE DE SAÚDE`;
     const urlWhatsapp = `https://wa.me/55${telefone}?text=${encodeURIComponent(textoMensagem)}`;
 
     window.open(urlWhatsapp, '_blank');

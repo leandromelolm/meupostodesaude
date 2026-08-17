@@ -4,10 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, of, tap } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-
-interface RespostaApi {
-  content: Profissional[];
-}
+import { ApiResposta } from '../../../shared/models/api-resposta.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,8 +39,8 @@ export class ProfissionaisService {
       }
     }
 
-    return this.http.get<RespostaApi>(this.apiUrl).pipe(
-      map(response => response.content),
+    return this.http.get<ApiResposta<Profissional[]>>(this.apiUrl).pipe(
+      map(response => response.data ?? []),
       tap(profissionais => {
         sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(profissionais));
         sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
@@ -52,8 +49,8 @@ export class ProfissionaisService {
   }
 
   getProfissionais2(): Observable<Profissional[]> {
-    return this.http.get<RespostaApi>(this.apiUrl).pipe(
-      map(response => response.content)
+    return this.http.get<ApiResposta<Profissional[]>>(this.apiUrl).pipe(
+      map(response => response.data ?? [])
     );
   }
 }

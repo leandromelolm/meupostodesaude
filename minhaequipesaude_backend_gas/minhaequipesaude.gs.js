@@ -4,17 +4,19 @@ function _env() {
     ENV_SPREADSHEET_ID: '',
     SH_ENDERECO: '',
     SH_PROFISSIONAL: '',
-    SH_EQUIPE: ''
+    SH_EQUIPE: '',
+    LISTA_EXCECOES: []
   }
 }
 
 function doGet(e) {
   let op = e.parameter.action;
   let sheetNumber = e.parameter.sheetnumber;
+  let aba = e.parameter.aba;
   let ss = SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID);
 
   if (op == "read")
-    return getBySheetName(ss, sheetNumber);
+    return getBySheetName(ss, sheetNumber, aba);
 
   if (op == "search") {
     let logradouro = e.parameter.logradouro;
@@ -23,7 +25,7 @@ function doGet(e) {
   }
 }
 
-function getBySheetName(ss, sheetNumber) {
+function getBySheetName(ss, sheetNumber, aba) {
   if (sheetNumber == 1) {
     return getDataAddress(ss.getSheetByName(env().SH_ENDERECO))
   }
@@ -36,19 +38,42 @@ function getBySheetName(ss, sheetNumber) {
     return getDataAll(ss.getSheetByName(env().SH_EQUIPE))
   }
 
+  if (sheetNumber == 4) {
+    if (verificarExcecoesDeAbas(aba)) return messageError('Não encontrado');
+    if(!verificarNomeAba(aba)) return messageError('Não encontrado');
+    return getDataAll(ss.getSheetByName(aba))
+  }
+
+}
+
+function verificarExcecoesDeAbas(aba){
+  const excecoes = env().LISTA_EXCECOES;
+  return excecoes.includes(aba);
+}
+
+function verificarNomeAba(aba) {
+  return pegarArrayNomeAbas().includes(aba);
+}
+
+function pegarArrayNomeAbas() {
+  return SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID).getSheets().map(aba => aba.getName());
 }
 
 function getDataAll(sheetName) {
-  let output = ContentService.createTextOutput(), data = {};
-  data.content = readData(sheetName);
-  output.setContent(JSON.stringify(data));
+  let output = ContentService.createTextOutput(), response = {};
+  response.data = readData(sheetName);
+  response.success = 'true';
+  response.meta = { total: response.data.length }
+  output.setContent(JSON.stringify(response));
   return output.setMimeType(ContentService.MimeType.JSON);
 }
 
 function getDataAddress(sheetName) {
-  let output = ContentService.createTextOutput(), data = {};
-  data.content = readData(sheetName, ['numero']);
-  output.setContent(JSON.stringify(data));
+  let output = ContentService.createTextOutput(), response = {};
+  response.data = readData(sheetName, ['numero']);
+  response.success = 'true';
+  response.meta = { total: response.data.length }
+  output.setContent(JSON.stringify(response));
   return output.setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -63,7 +88,7 @@ function limparTexto(texto) {
 
 function limparEPadronizarTexto(texto) {
   if (texto === undefined || texto === null) return "";
-
+  
   return String(texto)
     .normalize("NFD")                // Separa os acentos das letras
     .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
@@ -177,6 +202,13 @@ function getDataRows(sheet) {
   } catch (error) {
     return error;
   }
+}
+
+function messageError(msg) {
+  let output = ContentService.createTextOutput().setMimeType(ContentService.MimeType.JSON);
+  let response = { success: false, data: [] };
+  response.message = msg;
+  return output.setContent(JSON.stringify(response));
 }
 
 /** 
