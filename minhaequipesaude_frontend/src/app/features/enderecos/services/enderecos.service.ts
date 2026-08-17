@@ -53,9 +53,11 @@ export class EnderecosService {
       map(resposta => resposta.data ?? []),
       map(dadosBrutos => this.removerLogradourosDuplicados(dadosBrutos)),
       tap(dadosSemDuplicatas => {
-        sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(dadosSemDuplicatas));
-        sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
-        this.enderecosSignal.set(dadosSemDuplicatas);
+        if (isPlatformBrowser(this.platformId)) {
+          sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(dadosSemDuplicatas));
+          sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
+          this.enderecosSignal.set(dadosSemDuplicatas);
+        }
       })
     );
   }

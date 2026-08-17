@@ -1,5 +1,9 @@
 export const environment = {
-    production: false,
+    production: true,
     scriptId: ''
 };
-// // criar environment.prod.ts e environment.ts
+/** 
+ * 
+  criar environment.prod.ts e environment.ts
+ *
+ */ 

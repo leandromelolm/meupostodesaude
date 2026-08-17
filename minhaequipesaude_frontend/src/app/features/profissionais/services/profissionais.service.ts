@@ -7,10 +7,9 @@ import { isPlatformBrowser } from '@angular/common';
 import { ApiResposta } from '../../../shared/models/api-resposta.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProfissionaisService {
-
   private platformId = inject(PLATFORM_ID);
 
   private scriptId = environment.scriptId;
@@ -21,36 +20,41 @@ export class ProfissionaisService {
   // private readonly CACHE_DURATION_MS = 3600000; // 60 minutos
   private readonly CACHE_DURATION_MS = 7200000; // 120 minutos
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getProfissionais(): Observable<Profissional[]> {
-
     if (isPlatformBrowser(this.platformId)) {
       const dadosSalvos = sessionStorage.getItem(this.CACHE_KEY);
       const ultimaRequisicao = sessionStorage.getItem(this.TIME_KEY);
       const agora = Date.now();
 
-      if (dadosSalvos && ultimaRequisicao) {
+      if (dadosSalvos && dadosSalvos !== 'undefined' && ultimaRequisicao) {
         const tempoDecorrido = agora - parseInt(ultimaRequisicao, 10);
 
         if (tempoDecorrido < this.CACHE_DURATION_MS) {
-          return of(JSON.parse(dadosSalvos));
+          try {
+            return of(JSON.parse(dadosSalvos));
+          } catch (e) {
+            sessionStorage.removeItem(this.CACHE_KEY);
+          }
         }
       }
     }
 
     return this.http.get<ApiResposta<Profissional[]>>(this.apiUrl).pipe(
-      map(response => response.data ?? []),
-      tap(profissionais => {
-        sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(profissionais));
-        sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
-      })
+      map((response) => response.data ?? []),
+      tap((profissionais) => {
+        if (isPlatformBrowser(this.platformId) && profissionais) {
+          sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(profissionais));
+          sessionStorage.setItem(this.TIME_KEY, Date.now().toString());
+        }
+      }),
     );
   }
 
   getProfissionais2(): Observable<Profissional[]> {
-    return this.http.get<ApiResposta<Profissional[]>>(this.apiUrl).pipe(
-      map(response => response.data ?? [])
-    );
+    return this.http
+      .get<ApiResposta<Profissional[]>>(this.apiUrl)
+      .pipe(map((response) => response.data ?? []));
   }
 }
