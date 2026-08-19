@@ -5,18 +5,18 @@ function _env() {
     SH_ENDERECO: '',
     SH_PROFISSIONAL: '',
     SH_EQUIPE: '',
-    LISTA_EXCECOES: []
+    EXCEPTION_LIST: []
   }
 }
 
 function doGet(e) {
   let op = e.parameter.action;
   let sheetNumber = e.parameter.sheetnumber;
-  let aba = e.parameter.aba;
+  let sheet = e.parameter.aba;
   let ss = SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID);
 
   if (op == "read")
-    return getBySheetName(ss, sheetNumber, aba);
+    return getBySheetName(ss, sheetNumber, sheet);
 
   if (op == "search") {
     let logradouro = e.parameter.logradouro;
@@ -25,7 +25,7 @@ function doGet(e) {
   }
 }
 
-function getBySheetName(ss, sheetNumber, aba) {
+function getBySheetName(ss, sheetNumber, sheet) {
   if (sheetNumber == 1) {
     return getDataAddress(ss.getSheetByName(env().SH_ENDERECO))
   }
@@ -39,24 +39,38 @@ function getBySheetName(ss, sheetNumber, aba) {
   }
 
   if (sheetNumber == 4) {
-    if (verificarExcecoesDeAbas(aba)) return messageError('Não encontrado');
-    if(!verificarNomeAba(aba)) return messageError('Não encontrado');
-    return getDataAll(ss.getSheetByName(aba))
+    if (checkSpreadsheetSheet(sheet)) 
+      return messageError('Não encontrado');
+
+    return getDataAll(ss.getSheetByName(sheet))
   }
 
 }
 
-function verificarExcecoesDeAbas(aba){
-  const excecoes = env().LISTA_EXCECOES;
-  return excecoes.includes(aba);
+/** Verifica parametros para poder retorna a guia/aba da planilha */
+function checkSpreadsheetSheet(sheet) {
+  return !startsWithUnderscore(sheet) || 
+         isSheetException(sheet) || 
+         !isValidSheetName(sheet);
 }
 
-function verificarNomeAba(aba) {
-  return pegarArrayNomeAbas().includes(aba);
+function startsWithUnderscore(sheet) {
+  return sheet.startsWith('_');
 }
 
-function pegarArrayNomeAbas() {
-  return SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID).getSheets().map(aba => aba.getName());
+function isSheetException(sheet) {
+  const exceptions = env().EXCEPTION_LIST;
+  return exceptions.includes(sheet);
+}
+
+function isValidSheetName(sheet) {
+  return getSheetNames().includes(sheet);
+}
+
+function getSheetNames() {
+  return SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID)
+    .getSheets()
+    .map(sheet => sheet.getName());
 }
 
 function getDataAll(sheetName) {
