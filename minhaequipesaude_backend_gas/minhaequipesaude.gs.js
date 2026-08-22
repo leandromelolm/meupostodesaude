@@ -1,4 +1,7 @@
-/** alterar função para env() */
+/**
+ * Configurações de ambiente
+ * Alterar a função para env()
+ */
 function _env() {
   return {
     ENV_SPREADSHEET_ID: '',
@@ -6,130 +9,135 @@ function _env() {
     SH_PROFISSIONAL: '',
     SH_EQUIPE: '',
     EXCEPTION_LIST: []
-  }
+  };
 }
 
+/**
+ * Endpoint HTTP GET
+ */
 function doGet(e) {
-  let op = e.parameter.action;
-  let sheetNumber = e.parameter.sheetnumber;
-  let sheet = e.parameter.aba;
-  let ss = SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID);
+  let params = (e && e.parameter) ? e.parameter : {};
+  let op = params.action;
+  let sheetNumber = params.sheetnumber;
+  let sheet = params.aba;
 
-  if (op == "read")
-    return getBySheetName(ss, sheetNumber, sheet);
-
-  if (op == "search") {
-    let logradouro = e.parameter.logradouro;
-    let numero = e.parameter.numero;
-    return searchAddress(ss, logradouro, numero);
+  if (op === "read") {
+    return getBySheetName(sheetNumber, sheet);
   }
+
+  if (op === "search") {
+    let logradouro = params.logradouro;
+    let numero = params.numero;
+    return searchAddress(logradouro, numero);
+  }
+
+  if (op === "clear_cache") {
+    return limparCache();
+  }
+
+  return messageError('Ação inválida.');
 }
 
-function getBySheetName(ss, sheetNumber, sheet) {
+function getBySheetName(sheetNumber, sheet) {
+  let envData = env();
+
   if (sheetNumber == 1) {
-    return getDataAddress(ss.getSheetByName(env().SH_ENDERECO))
+    return getDataAddress(envData.SH_ENDERECO);
   }
 
   if (sheetNumber == 2) {
-    return getDataAll(ss.getSheetByName(env().SH_PROFISSIONAL))
+    return getDataAll(envData.SH_PROFISSIONAL);
   }
 
   if (sheetNumber == 3) {
-    return getDataAll(ss.getSheetByName(env().SH_EQUIPE))
+    return getDataAll(envData.SH_EQUIPE);
   }
 
   if (sheetNumber == 4) {
-    if (checkSpreadsheetSheet(sheet)) 
-      return messageError('Não encontrado');
-
-    return getDataAll(ss.getSheetByName(sheet))
+    if (checkSpreadsheetSheet(sheet)) {
+      return messageError('Aba não encontrada ou de acesso restrito');
+    }
+    return getDataAll(sheet);
   }
 
+  return messageError('Parâmetro sheetnumber inválido');
 }
 
-/** Verifica parametros para poder retorna a guia/aba da planilha */
 function checkSpreadsheetSheet(sheet) {
+  if (!sheet) return true;
   return !startsWithUnderscore(sheet) || 
          isSheetException(sheet) || 
          !isValidSheetName(sheet);
 }
 
 function startsWithUnderscore(sheet) {
-  return sheet.startsWith('_');
+  return Boolean(sheet && sheet.startsWith('_'));
 }
 
 function isSheetException(sheet) {
-  const exceptions = env().EXCEPTION_LIST;
+  const exceptions = env().EXCEPTION_LIST || [];
   return exceptions.includes(sheet);
 }
 
 function isValidSheetName(sheet) {
-  return getSheetNames().includes(sheet);
+  return getSheetNamesCached().includes(sheet);
 }
 
-function getSheetNames() {
-  return SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID)
-    .getSheets()
-    .map(sheet => sheet.getName());
+function getSheetNamesCached() {
+  let cache = CacheService.getScriptCache();
+  let cachedNames = cache.get("sheet_names");
+
+  if (cachedNames) {
+    return JSON.parse(cachedNames);
+  }
+
+  let ss = SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID);
+  let names = ss.getSheets().map(function(sheet) { return sheet.getName(); });
+  // cache com duração de 6 horas (21600 segundos)
+  cache.put("sheet_names", JSON.stringify(names), 21600);
+  return names;
 }
 
 function getDataAll(sheetName) {
-  let output = ContentService.createTextOutput(), response = {};
-  response.data = readData(sheetName);
-  response.success = 'true';
-  response.meta = { total: response.data.length }
-  output.setContent(JSON.stringify(response));
-  return output.setMimeType(ContentService.MimeType.JSON);
+  let response = {
+    success: true,
+    data: readDataCached(sheetName),
+    meta: {}
+  };
+  
+  if (Array.isArray(response.data)) {
+    response.meta.total = response.data.length;
+  }
+
+  return buildJsonResponse(response);
 }
 
 function getDataAddress(sheetName) {
-  let output = ContentService.createTextOutput(), response = {};
-  response.data = readData(sheetName, ['numero']);
-  response.success = 'true';
-  response.meta = { total: response.data.length }
-  output.setContent(JSON.stringify(response));
-  return output.setMimeType(ContentService.MimeType.JSON);
+  let response = {
+    success: true,
+    data: readDataCached(sheetName, ['numero']),
+    meta: {}
+  };
+
+  if (Array.isArray(response.data)) {
+    response.meta.total = response.data.length;
+  }
+
+  return buildJsonResponse(response);
 }
 
-function limparTexto(texto) {
-  if (texto === undefined || texto === null) return "";
-  return String(texto)
-    .replace(/,/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
-}
-
-function limparEPadronizarTexto(texto) {
-  if (texto === undefined || texto === null) return "";
-  
-  return String(texto)
-    .normalize("NFD")                // Separa os acentos das letras
-    .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
-    .replace(/,/g, "")               // Remove as vírgulas
-    .replace(/\s+/g, " ")            // Substitui múltiplos espaços por um único espaço
-    .toLowerCase()                   // Transforma tudo em minúsculo
-    .trim();                         // Remove espaços extras no início e no fim
-}
-
-function searchAddress(ss, logradouroBuscadoBruto, numeroBuscadoBruto) {
+function searchAddress(logradouroBuscadoBruto, numeroBuscadoBruto) {
   let logradouroBuscado = limparEPadronizarTexto(logradouroBuscadoBruto);
   let numeroBuscado = limparEPadronizarTexto(numeroBuscadoBruto);
 
-  let output = ContentService.createTextOutput().setMimeType(ContentService.MimeType.JSON);
-  let response = { success: false, data: [] };
-
   if (!logradouroBuscado || !numeroBuscado) {
-    response.error = "Parametros 'logradouro' e 'numero' sao obrigatorios.";
-    return output.setContent(JSON.stringify(response));
+    return messageError("Parametros 'logradouro' e 'numero' sao obrigatorios.");
   }
 
-  let sheetEndereco = ss.getSheetByName(env().SH_ENDERECO);
-  let todosEnderecos = readData(sheetEndereco);
+  let todosEnderecos = readDataCached(env().SH_ENDERECO);
 
-  if (todosEnderecos instanceof Error) {
-    response.error = todosEnderecos.message;
-    return output.setContent(JSON.stringify(response));
+  if (!Array.isArray(todosEnderecos)) {
+    return messageError("Erro ao recuperar lista de endereços.");
   }
 
   let encontrados = todosEnderecos.filter(function (item) {
@@ -139,6 +147,8 @@ function searchAddress(ss, logradouroBuscadoBruto, numeroBuscadoBruto) {
     return logradouroPlanilha.includes(logradouroBuscado) && numeroPlanilha === numeroBuscado;
   });
 
+  let response = { success: false, data: [] };
+
   if (encontrados.length > 0) {
     response.success = true;
     response.data = encontrados;
@@ -146,37 +156,126 @@ function searchAddress(ss, logradouroBuscadoBruto, numeroBuscadoBruto) {
     response.message = "Nenhum endereco correspondente foi encontrado.";
   }
 
-  return output.setContent(JSON.stringify(response));
+  return buildJsonResponse(response);
 }
 
-function readData(sheet, colunasIgnoradas = []) {
+function limparEPadronizarTexto(texto) {
+  if (texto === undefined || texto === null) return "";
+  
+  return String(texto)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/,/g, "")
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .trim();
+}
+
+/**
+ * Cache Fatiado (Chunking) para contornar o limite de 100KB por item
+ */
+function readDataCached(sheetName, colunasIgnoradas) {
+  if (!colunasIgnoradas) colunasIgnoradas = [];
+  let cacheKey = "data_" + sheetName + "_" + colunasIgnoradas.join("_");
+  let cachedData = getChunkedCache(cacheKey);
+
+  if (cachedData) {
+    return cachedData;
+  }
+
+  let ss = SpreadsheetApp.openById(env().ENV_SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(sheetName);
+  
+  if (!sheet) {
+    return [];
+  }
+
+  let data = readData(sheet, colunasIgnoradas);
+
+  if (Array.isArray(data)) {
+    setChunkedCache(cacheKey, data, 3600);
+  }
+
+  return data;
+}
+
+function setChunkedCache(key, data, expirationInSeconds) {
+  if (!expirationInSeconds) expirationInSeconds = 3600;
+  let cache = CacheService.getScriptCache();
+  let jsonString = JSON.stringify(data);
+  let chunkSize = 80000; // ~78KB por fatia para margem de segurança
+  
+  let chunksCount = Math.ceil(jsonString.length / chunkSize);
+  let payload = {};
+  
+  for (let i = 0; i < chunksCount; i++) {
+    let chunkKey = key + "_chunk_" + i;
+    payload[chunkKey] = jsonString.substring(i * chunkSize, (i + 1) * chunkSize);
+  }
+  
+  payload[key + "_chunks"] = String(chunksCount);
+  cache.putAll(payload, expirationInSeconds);
+}
+
+function getChunkedCache(key) {
+  let cache = CacheService.getScriptCache();
+  let chunksCountStr = cache.get(key + "_chunks");
+  
+  if (!chunksCountStr) return null;
+  
+  let chunksCount = parseInt(chunksCountStr, 10);
+  let keys = [];
+  
+  for (let i = 0; i < chunksCount; i++) {
+    keys.push(key + "_chunk_" + i);
+  }
+  
+  let cachedChunks = cache.getAll(keys);
+  let fullJsonString = "";
+  
+  for (let i = 0; i < chunksCount; i++) {
+    let chunkKey = key + "_chunk_" + i;
+    if (!cachedChunks[chunkKey]) return null;
+    fullJsonString += cachedChunks[chunkKey];
+  }
+  
   try {
-    const ignorarFormatado = colunasIgnoradas.map(p => p.trim());
+    return JSON.parse(fullJsonString);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Processamento das Planilhas
+ */
+function readData(sheet, colunasIgnoradas) {
+  if (!colunasIgnoradas) colunasIgnoradas = [];
+  try {
+    const ignorarFormatado = colunasIgnoradas.map(function(p) { return p.trim(); });
     let originalHeaders = getHeaderRow(sheet);
 
-    // Cria a lista modificada com underlines
     let properties = originalHeaders.map(function (p) {
       return String(p).replace(/\s+/g, '_');
     });
 
-    let rows = getDataRows(sheet),
-      data = [];
+    let rows = getDataRows(sheet);
+    let data = [];
 
     for (let r = 0, l = rows.length; r < l; r++) {
-      let row = rows[r],
-        record = {};
+      let row = rows[r];
+      let record = {};
 
-      for (let p in properties) {
+      for (let p = 0; p < properties.length; p++) {
         let columnName = properties[p];
         let originalName = originalHeaders[p];
         let cellValue = row[p];
 
-        // Ignora se cabeçalho está vazio ou se começa com '#'
         if (!originalName || String(originalName).trim() === "" || String(originalName).trim().startsWith("#")) {
           continue;
         }
 
-        if (ignorarFormatado.includes(originalName)) {
+        if (ignorarFormatado.indexOf(originalName) !== -1) {
           continue;
         }
 
@@ -192,7 +291,7 @@ function readData(sheet, colunasIgnoradas = []) {
     }
     return data;
   } catch (error) {
-    return error;
+    return [];
   }
 }
 
@@ -202,7 +301,7 @@ function getHeaderRow(sheet) {
     if (lastColumn === 0) return [];
     return sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
   } catch (error) {
-    return error;
+    return [];
   }
 }
 
@@ -214,51 +313,58 @@ function getDataRows(sheet) {
 
     return sheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
   } catch (error) {
-    return error;
+    return [];
   }
 }
 
-function messageError(msg) {
-  let output = ContentService.createTextOutput().setMimeType(ContentService.MimeType.JSON);
-  let response = { success: false, data: [] };
-  response.message = msg;
-  return output.setContent(JSON.stringify(response));
+/**
+ * Respostas HTTP
+ */
+function buildJsonResponse(data) {
+  let output = ContentService.createTextOutput();
+  output.setContent(JSON.stringify(data));
+  return output.setMimeType(ContentService.MimeType.JSON);
 }
 
-/** 
- * 
-   
-ROTAS
-  ENDEREÇOS
-  ?action=read&sheetnumber=1
-  
-  PROFISSIONAL
-  ?action=read&sheetnumber=2 
-  
-  EQUIPE
-  ?action=read&sheetnumber=3
+function messageError(msg) {
+  return buildJsonResponse({
+    success: false,
+    data: [],
+    message: msg
+  });
+}
 
-  PESQUISAR LOGRADOURO
-  ?action=search&logradouro=Rua das Flores&numero=150
-  
-CRIAR PLANILHA
-  Crie uma planilha com 3 folhas(aba). 
-  os nomes dado as planilhas devem ser atribuido as variaveis da função env.
-  SH_ENDERECO : '{NOME_DA_FOLHA_1}',
-  SH_PROFISSIONAL: '{NOME_DA_FOLHA_2}',
-  SH_EQUIPE: '{NOME_DA_FOLHA_3}'
+/**
+ * Limpeza de Cache Completa
+ */
+function limparCache() {
+  let cache = CacheService.getScriptCache();
+  let envData = env();
 
+  // Limpa índice de abas
+  cache.remove("sheet_names");
 
-COLUNA DAS FOLHAS
-  Obs: cabeçalho vazio ou se começa com '#' são ignorados na requisição
-  
-  ENDERECO
-  id	logradouro	numero	cep	bairro	micro	cidade	complemento	observacao	acs	equipe_vinculada	aviso
+  // Lista de chaves base utilizadas no projeto
+  let baseKeys = [
+    "data_" + envData.SH_ENDERECO + "_",
+    "data_" + envData.SH_ENDERECO + "_numero",
+    "data_" + envData.SH_PROFISSIONAL + "_",
+    "data_" + envData.SH_EQUIPE + "_"
+  ];
 
-  PROFISSIONAL
-  id	nome	funcao	especialidade	registro	micro	equipe	unidade	url_foto contato
+  baseKeys.forEach(function(baseKey) {
+    let chunksCountStr = cache.get(baseKey + "_chunks");
+    if (chunksCountStr) {
+      let count = parseInt(chunksCountStr, 10);
+      for (let i = 0; i < count; i++) {
+        cache.remove(baseKey + "_chunk_" + i);
+      }
+      cache.remove(baseKey + "_chunks");
+    }
+  });
 
-  EQUIPE
-  id	nome	ine	apelido	registro	descricao	unidade
-
-*/
+  return buildJsonResponse({
+    success: true,
+    message: "Cache e fragmentos zerados com sucesso!"
+  });
+}
