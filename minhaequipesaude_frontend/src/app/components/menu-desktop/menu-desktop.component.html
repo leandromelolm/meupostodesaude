@@ -1,18 +1,31 @@
 <aside class="sidebar-desktop">
-  @if(isScrolled){
-    <div style="height: 82px;"></div>
+  @if (isScrolled) {
+    <div style="height: 82px"></div>
   }
-  <nav class="navbar" [ngClass]="{ 
-      'scrolled': isScrolled, 
-      'menu-hidden': isHidden 
-    }">
+  <nav
+    class="navbar"
+    [ngClass]="{
+      scrolled: isScrolled,
+      'menu-hidden': isHidden,
+    }"
+  >
     <div class="nav-container">
       <div class="itens__container">
         <div class="nav-title-ico">
-          <a class="a__menu" [routerLink]="['/sobre']" routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }">
+          <a
+            class="a__menu"
+            [routerLink]="['/home']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
             <div class="div__nome-unidade">
-              <img class="icone_menu" src="/assets/images/usf_vsm.webp" alt="USF" width="50" height="50">
+              <img
+                class="icone_menu"
+                src="/assets/images/usf_vsm.webp"
+                alt="USF"
+                width="50"
+                height="50"
+              />
               <div>USF Vila São Miguel / Marron Glacê</div>
             </div>
           </a>
@@ -20,16 +33,24 @@
         <ul class="nav-menu">
           <li>
             <!-- <a class="a__menu" [routerLink]="['/equipes']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"> -->
-            <a class="a__menu" [routerLink]="['/profissionais/4']" routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }">
-              <img src="/assets/images/equipe.svg" alt="Minha Equipe">
+            <a
+              class="a__menu"
+              [routerLink]="['/profissionais/4']"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <img src="/assets/images/equipe.svg" alt="Minha Equipe" />
               <div class="txt__menu">Minha Equipe</div>
             </a>
           </li>
           <li>
-            <a class="a__menu" [routerLink]="['/busca-ruas']" routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }">
-              <img src="/assets/images/localizacao.svg" alt="Meu Endereço">
+            <a
+              class="a__menu"
+              [routerLink]="['/busca-ruas']"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <img src="/assets/images/localizacao.svg" alt="Meu Endereço" />
               <div class="txt__menu">Buscar Endereço</div>
             </a>
           </li>

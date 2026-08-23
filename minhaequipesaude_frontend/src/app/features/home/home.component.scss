@@ -1,0 +1,164 @@
+.section-total {
+    scroll-margin-top: 80px;
+    min-height: 100vh;
+    padding: 3rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.header-section h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: #ffffff;
+    margin-top: 0.5rem;
+    font-weight: 700;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+}
+
+.container-responsivo {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1100px;
+}
+
+.bloco-imagem {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.bloco-imagem img {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.bloco-imagem:hover img {
+    transform: scale(1.03);
+}
+
+.overlay-badge {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    backdrop-filter: blur(4px);
+}
+
+.bloco-texto {
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.subtitulo {
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.bloco-texto p {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+}
+
+.lista-servicos {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.lista-servicos li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #374151;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.lista-servicos .icon {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.endereco-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn-redirecionar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-redirecionar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.ico_ws {
+    height: 28px;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+@media (min-width: 768px) {
+    .container-responsivo {
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
+    }
+}

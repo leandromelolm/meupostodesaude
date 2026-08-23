@@ -1,16 +1,29 @@
 <nav class="bottom-nav">
-    <ul class="nav-list">
-        <li class="nav-item" [routerLink]="['/profissionais/4']" routerLinkActive="active">
-            <img src="/assets/images/equipe.svg" alt="Minha Equipe">
-            <span>Minha Equipe</span>
-        </li>
-        <li class="nav-item" [routerLink]="['/busca-ruas']" routerLinkActive="active">
-            <img src="/assets/images/localizacao.svg" alt="Buscar Endereço">
-            <span>Buscar Endereço</span>
-        </li>
-        <li class="nav-item" (click)="toggleMenu()" [routerLink]="['/sobre']" routerLinkActive="active">
-            <i class="icon icon-menu"></i>
-            <span>Usf Vila São Miguel</span>
-        </li>
-    </ul>
+  <ul class="nav-list">
+    <li
+      class="nav-item"
+      [routerLink]="['/profissionais/4']"
+      routerLinkActive="active"
+    >
+      <img src="/assets/images/equipe.svg" alt="Minha Equipe" />
+      <span>Minha Equipe</span>
+    </li>
+    <li
+      class="nav-item"
+      [routerLink]="['/busca-ruas']"
+      routerLinkActive="active"
+    >
+      <img src="/assets/images/localizacao.svg" alt="Buscar Endereço" />
+      <span>Buscar Endereço</span>
+    </li>
+    <li
+      class="nav-item"
+      (click)="toggleMenu()"
+      [routerLink]="['/home']"
+      routerLinkActive="active"
+    >
+      <i class="icon icon-menu"></i>
+      <span>Usf Vila São Miguel</span>
+    </li>
+  </ul>
 </nav>

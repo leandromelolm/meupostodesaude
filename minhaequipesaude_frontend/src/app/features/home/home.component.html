@@ -1,0 +1,79 @@
+<section class="section-total">
+  <div class="header-section">
+    <span class="badge">Unidade de Saúde da Família</span>
+    <h2>Conheça Nossa Unidade</h2>
+  </div>
+
+  <div class="container-responsivo">
+    <div class="bloco-imagem">
+      <img
+        src="/assets/images/usf_frente_2.webp"
+        alt="Fachada da USF Vila São Miguel"
+      />
+      <div class="overlay-badge">Afogados, Recife - PE</div>
+    </div>
+
+    <div class="bloco-texto">
+      <span class="subtitulo">USF Vila São Miguel / Marron Glacê</span>
+      <p>
+        Localizada no bairro de Afogados, nossa unidade conta com
+        <strong>4 equipes de saúde da família</strong> dedicadas à prevenção de
+        doenças e promoção do bem-estar comunitário.
+      </p>
+
+      <ul class="lista-servicos">
+        <li>
+          <i class="icon">✓</i> Consultas e acompanhamento de doenças crônicas
+        </li>
+        <li>
+          <i class="icon">✓</i> Pré-natal para gestantes e Vacinação para todo o
+          público
+        </li>
+        <li>
+          <i class="icon">✓</i> Atendimento odontológico e visitas domiciliares
+        </li>
+        <li><i class="icon">✓</i> Entre outros serviços</li>
+      </ul>
+
+      <div class="endereco-info">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>Rua Emília Torreão - Afogados, Recife - PE</span>
+      </div>
+
+      <button
+        class="btn-redirecionar"
+        [routerLink]="['/profissionais/4']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span>Conheça os membros da equipe 4</span>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<app-float-button (buttonClick)="redirecionarFaleComSuaEquipe()" [bottom]="112">
+  <span>Fale com Nossa Equipe</span>
+  <img class="ico_ws" src="/assets/images/icons-whatsapp.svg" alt="whatsapp" />
+</app-float-button>
