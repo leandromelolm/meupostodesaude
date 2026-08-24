@@ -1,36 +1,79 @@
-<div class="section-title section-total">
+<section class="section-total">
+  <div class="header-section">
+    <span class="badge">Unidade de Saúde da Família</span>
     <h2>Conheça Nossa Unidade</h2>
-    <div class="container-responsivo">
+  </div>
 
-        <div class="bloco-imagem">
-            <img src="/assets/images/usf_frente_2.webp" alt="Descrição da imagem explicativa">
-        </div>
-
-        <div class="bloco-texto">
-            <h2>Usf Vila São Miguel/ Marron Glacê</h2>
-            <p>
-                A Unidade de Saúde da Família Vila São Miguel/Marron Glacê fica localizada no Bairro de Afogados
-                sendo composta por 4 equipes de saúde da família.
-            </p>
-            <p>
-                As Equipes atuam na prevenção de doenças e promoção à saúde. Suas equipes multidisciplinares
-                acompanham os moradores de um território específico, realizando consultas, vacinação, acompanhamento de
-                gestantes, tratamento de doenças crônicas, atendimento odontológico e visitas domiciliares.
-            </p>
-            <p>
-                A Unidade fica na Rua Emília Torreão - Afogados, Recife - PE.
-            </p>
-            <button class="btn-redirecionar" [routerLink]="['/profissionais/4']" routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: true }">
-                <h3>Conheça os membros da equipe 4</h3>
-            </button>
-        </div>
-
+  <div class="container-responsivo">
+    <div class="bloco-imagem">
+      <img
+        src="/assets/images/usf_frente_2.webp"
+        alt="Fachada da USF Vila São Miguel"
+      />
+      <div class="overlay-badge">Afogados, Recife - PE</div>
     </div>
 
-</div>
+    <div class="bloco-texto">
+      <span class="subtitulo">USF Vila São Miguel / Marron Glacê</span>
+      <p>
+        Localizada no bairro de Afogados, nossa unidade conta com
+        <strong>4 equipes de saúde da família</strong> dedicadas à prevenção de
+        doenças e promoção do bem-estar comunitário.
+      </p>
+
+      <ul class="lista-servicos">
+        <li>
+          <i class="icon">✓</i> Consultas e acompanhamento de doenças crônicas
+        </li>
+        <li>
+          <i class="icon">✓</i> Pré-natal para gestantes e Vacinação para todo o
+          público
+        </li>
+        <li>
+          <i class="icon">✓</i> Atendimento odontológico e visitas domiciliares
+        </li>
+        <li><i class="icon">✓</i> Entre outros serviços</li>
+      </ul>
+
+      <div class="endereco-info">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>Rua Emília Torreão - Afogados, Recife - PE</span>
+      </div>
+
+      <button
+        class="btn-redirecionar"
+        [routerLink]="['/profissionais/4']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <span>Conheça os membros da equipe 4</span>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
 
 <app-float-button (buttonClick)="redirecionarFaleComSuaEquipe()" [bottom]="112">
-    <span>Fale com Nossa Equipe</span>
-    <img class="ico_ws" src="/assets/images/icons-whatsapp.svg" alt="whatsapp">
+  <span>Fale com Nossa Equipe</span>
+  <img class="ico_ws" src="/assets/images/icons-whatsapp.svg" alt="whatsapp" />
 </app-float-button>
