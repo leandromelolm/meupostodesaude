@@ -35,11 +35,14 @@
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #5ad1ff;
 }
 
 .team-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  border-color: color-mix(in srgb, #5ad1ff 55%, #39e4d6);
+  box-shadow: 0 14px 40px -12px color-mix(in srgb, #5ad1ff 45%, transparent);
 }
 
 .team-photo {
@@ -59,7 +62,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid rgba(255, 255, 255, 0.5);
+  // border: 2px solid #39e4d6;
+  border: 2px solid #5ad1ff;
+  box-shadow: 0 0 18px -2px color-mix(in srgb, #5ad1ff 70%, transparent);
 }
 
 .photo-placeholder svg {
