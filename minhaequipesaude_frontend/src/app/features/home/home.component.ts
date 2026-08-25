@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { afterNextRender, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 import { FloatButtonComponent } from '../../components/float-button/float-button.component';
 
 @Component({
@@ -9,6 +10,16 @@ import { FloatButtonComponent } from '../../components/float-button/float-button
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+
+  constructor(private viewportScroller: ViewportScroller) {
+    afterNextRender(() => {
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          this.viewportScroller.scrollToPosition([0, 100]);
+        }, 50);
+      }
+    });
+  }
 
   redirecionarFaleComSuaEquipe() {
 
