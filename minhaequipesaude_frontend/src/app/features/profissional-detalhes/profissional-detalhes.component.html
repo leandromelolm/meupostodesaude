@@ -1,54 +1,81 @@
 <div class="detalhes-container">
-    <div class="profissional-header">
-        <h2>{{ profissional().nome }}</h2>
-        <p class="funcao">{{ profissional().funcao }}</p>
-        <p class="micro">Microárea atendida: <strong>{{ profissional().micro }}</strong></p>
-    </div>
+  <div class="profissional-header">
+    <img
+      src="{{ profissional().url_foto }}"
+      class="photo-placeholder"
+      alt=""
+      (error)="$any($event.target).src = '/assets/images/person_90dp_FFF.svg'"
+    />
+    <h2>{{ profissional().nome }}</h2>
+    <p class="funcao">{{ profissional().funcao }}</p>
+    <p class="micro">
+      Microárea atendida: <strong>{{ profissional().micro }}</strong>
+    </p>
+  </div>
 
-    <hr class="divisor" />
+  <hr class="divisor" />
 
-    <div class="ruas-atendidas-section">
-        <h3>Selecione sua rua para atendimento:</h3>
+  <div class="ruas-atendidas-section">
+    <h3>Selecione sua rua para atendimento:</h3>
 
-        @if (carregandoRuas()) {
-            <div class="loading-ruas">
-                <p>Buscando ruas da microárea...</p>
-            </div>
-        } @else {
-        @if (ruasFiltradas().length > 0) {
-            <div class="select-wrapper">
-                <select [ngModel]="ruaSelecionada()" (ngModelChange)="ruaSelecionada.set($event)" class="select-ruas">
-                    <option value="" disabled>-- Escolha a sua rua --</option>
-                    @for (rua of ruasFiltradas(); track rua.id) {
-                    <option [value]="rua.logradouro">
-                        {{ rua.logradouro }} @if(rua.bairro){ - {{ rua.bairro }} }
-                    </option>
-                    }
-                    <option value="nenhum">ENDEREÇO NÃO ENCONTRADO</option>
-                </select>
-                </div>
-
-            @if (ruaSelecionada() && ruaSelecionada() !== "nenhum") {
-            <div class="action-section">
-                <button (click)="enviarMensagemAcs()" class="btn-enviar-mensagem">
-                    <img class="ico_ws" src="/assets/images/icons-whatsapp.svg" alt="whatsapp">
-                    <div>Enviar mensagem para seu Agente Comunitário de Saúde</div>
-                </button>
-            </div>
+    @if (carregandoRuas()) {
+      <div class="loading-ruas">
+        <p>Buscando ruas da microárea...</p>
+      </div>
+    } @else {
+      @if (ruasFiltradas().length > 0) {
+        <div class="select-wrapper">
+          <select
+            [ngModel]="ruaSelecionada()"
+            (ngModelChange)="ruaSelecionada.set($event)"
+            class="select-ruas"
+          >
+            <option value="" disabled>-- Escolha a sua rua --</option>
+            @for (rua of ruasFiltradas(); track rua.id) {
+              <option [value]="rua.logradouro">
+                {{ rua.logradouro }}
+                @if (rua.bairro) {
+                  - {{ rua.bairro }}
+                }
+              </option>
             }
-            @if (ruaSelecionada() && ruaSelecionada() == "nenhum") {
-            <div class="action-section">
-                <button class="btn-redirecionar" [routerLink]="['/busca-ruas']" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: true }">
-                    <img src="/assets/images/localizacao.svg" alt="Meu Endereço">
-                    <div class="txt__menu">Pesquise em Buscar Endereço para encontrar seu Agente de Saúde</div>
-                </button>
-            </div>
-            }
-        } @else {
-            <p class="sem-ruas">Nenhum logradouro encontrado para a microárea deste profissional (Micro: {{
-                profissional().micro }}).</p>
-            }
+            <option value="nenhum">ENDEREÇO NÃO ENCONTRADO</option>
+          </select>
+        </div>
+
+        @if (ruaSelecionada() && ruaSelecionada() !== "nenhum") {
+          <div class="action-section">
+            <button (click)="enviarMensagemAcs()" class="btn-enviar-mensagem">
+              <img
+                class="ico_ws"
+                src="/assets/images/icons-whatsapp.svg"
+                alt="whatsapp"
+              />
+              <div>Enviar mensagem para seu Agente Comunitário de Saúde</div>
+            </button>
+          </div>
         }
-    </div>
+        @if (ruaSelecionada() && ruaSelecionada() == "nenhum") {
+          <div class="action-section">
+            <button
+              class="btn-redirecionar"
+              [routerLink]="['/busca-ruas']"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+            >
+              <img src="/assets/images/localizacao.svg" alt="Meu Endereço" />
+              <div class="txt__menu">
+                Pesquise em Buscar Endereço para encontrar seu Agente de Saúde
+              </div>
+            </button>
+          </div>
+        }
+      } @else {
+        <p class="sem-ruas">
+          Nenhum logradouro encontrado para a microárea deste profissional
+          (Micro: {{ profissional().micro }}).
+        </p>
+      }
+    }
+  </div>
 </div>

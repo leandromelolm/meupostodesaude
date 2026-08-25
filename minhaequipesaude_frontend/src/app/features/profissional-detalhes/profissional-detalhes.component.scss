@@ -8,6 +8,29 @@
     color: #333333;
 }
 
+.profissional-header {
+    justify-items: center;
+}
+
+.photo-placeholder {
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // border: 2px solid #39e4d6;
+  border: 2px solid #5ad1ff;
+  box-shadow: 0 0 18px -2px color-mix(in srgb, #5ad1ff 70%, transparent);
+}
+
+.photo-placeholder svg {
+  width: 70px;
+  height: 70px;
+  color: white;
+}
+
 .profissional-header h2 {
     font-size: 1.75rem;
     margin-bottom: 0.25rem;
