@@ -16,12 +16,16 @@ export class HomeComponent {
   constructor() {
     afterNextRender(() => {
 
-      setTimeout(() => {
-        this.badgeElement()?.nativeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 50);
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          this.badgeElement()?.nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 150);
+
+      }
+
 
       const mediaQuery = window.matchMedia('(max-width: 768px)');
       this.atualizarBottom(mediaQuery.matches);
@@ -34,11 +38,7 @@ export class HomeComponent {
   }
 
   private atualizarBottom(isMobile: boolean): void {
-    if (isMobile) {
-      this.floatButtonBottom.set(75);
-    } else {
-      this.floatButtonBottom.set(112);
-    }
+    this.floatButtonBottom.set(isMobile ? 75 : 112);
   }
 
   redirecionarFaleComSuaEquipe() {

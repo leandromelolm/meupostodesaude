@@ -12,7 +12,13 @@
 }
 
 .div_github {
-    margin: 20px 0 120px 0 ;
+    margin: 20px 0 20px 0 ;
+}
+
+@media (max-width: 768px) {
+    .div_github {
+        margin: 20px 0 120px 0 ;
+    }
 }
 
 .a_href {
