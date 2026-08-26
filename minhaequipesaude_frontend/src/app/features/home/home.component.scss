@@ -167,9 +167,11 @@
 
     .us-overlay {
         background: linear-gradient(
-            180deg,
-            rgba(5, 11, 24, 0.85) 0%,
-            rgba(5, 11, 24, 0.95) 100%
+            90deg,
+            rgba(5, 11, 24, 0.95) 40%,
+            rgba(5, 11, 24, 0.8) 60%,
+            rgba(5, 11, 24, 0.25) 90%,
+            rgba(5, 11, 24, 0) 100%
         );
     }
 }
