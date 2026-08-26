@@ -1,12 +1,12 @@
 # MinhaEquipeSaude
 
 ## Projeto Implantado
+
 [minhaequipesaude.web.app](https://minhaequipesaude.web.app)
 
-
 ## Sobre o Angular
-Este projeto foi gerado usando [Angular CLI](https://github.com/angular/angular-cli) versão 19.2.19.
 
+Este projeto foi gerado usando [Angular CLI](https://github.com/angular/angular-cli) versão 19.2.19.
 
 ## Meus Comandos
 
@@ -34,7 +34,7 @@ npx ng serve
 # ajuda
 npx ng generate --help
 
-# url 
+# projeto implementado na url
 https://minhaequipesaude.web.app
 
 

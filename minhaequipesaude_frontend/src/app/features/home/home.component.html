@@ -9,7 +9,7 @@
 
   <div class="us-content">
     <div class="header-section">
-      <span class="badge">Unidade de Saúde da Família</span>
+      <span #badgeElement class="badge">Unidade de Saúde da Família</span>
       <h2>USF Vila São Miguel / Marron Glacê</h2>
     </div>
 
@@ -78,7 +78,10 @@
   </div>
 </section>
 
-<app-float-button (buttonClick)="redirecionarFaleComSuaEquipe()" [bottom]="112">
+<app-float-button
+  (buttonClick)="redirecionarFaleComSuaEquipe()"
+  [bottom]="floatButtonBottom()"
+>
   <span>Fale com Nossa Equipe</span>
   <img class="ico_ws" src="/assets/images/icons-whatsapp.svg" alt="whatsapp" />
 </app-float-button>
