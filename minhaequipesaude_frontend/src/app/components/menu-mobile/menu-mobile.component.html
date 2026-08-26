@@ -10,20 +10,20 @@
     </li>
     <li
       class="nav-item"
-      [routerLink]="['/busca-ruas']"
-      routerLinkActive="active"
-    >
-      <img src="/assets/images/localizacao.svg" alt="Buscar Endereço" />
-      <span>Buscar Endereço</span>
-    </li>
-    <li
-      class="nav-item"
       (click)="toggleMenu()"
       [routerLink]="['/home']"
       routerLinkActive="active"
     >
       <i class="icon icon-menu"></i>
       <span>Usf Vila São Miguel</span>
+    </li>
+    <li
+      class="nav-item"
+      [routerLink]="['/busca-endereco']"
+      routerLinkActive="active"
+    >
+      <img src="/assets/images/localizacao.svg" alt="Buscar Endereço" />
+      <span>Buscar Endereço</span>
     </li>
   </ul>
 </nav>
