@@ -14,24 +14,20 @@
   background: white;
   padding: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
+  position: fixed;
   top: 0;
   width: 100%;
   z-index: 100;
   transition: transform 0.3s ease-in-out, background-color 0.3s ease;
 }
 
-.navbar.scrolled {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transform: translateY(0);
-}
-
 .navbar.scrolled.menu-hidden {
   transform: translateY(-100%);
+}
+
+.navbar.scrolled {
+  left: 0;
+  transform: translateY(0);
 }
 
 .nav-container {
@@ -55,7 +51,7 @@
 
 .nav-title-ico a {
   display: block;
-  color: #000000;
+  color: #5f6f86;
   text-decoration: none;
   font-weight: 500;
   text-align: center;
@@ -88,13 +84,14 @@
 .nav-menu a {
   display: block;
   padding: 1.25rem 1.5rem;
-  color: #000000;
+  color: #5f6f86;
   text-decoration: none;
   font-weight: 500;
   text-align: center;
   transition: background-color 0.3s ease;
   border-bottom: 3px solid transparent;
   width: max-content;
+  font-weight: bold;
 }
 
 .navbar.scrolled .nav-menu a {
@@ -108,12 +105,11 @@
 .nav-menu a.active {
   background-color: transparent;
   color: #0052a3;
-  border-bottom-color: #0052a3;
-  font-weight: bold;
+  border-bottom-color: #0052a3
 }
 
 .txt__menu {
-  font-size: 70%;
+  font-size: 100%;
 }
 
 @media (max-width: 768px) {

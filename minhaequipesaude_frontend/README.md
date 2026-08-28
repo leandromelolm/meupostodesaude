@@ -8,7 +8,7 @@
 
 Este projeto foi gerado usando [Angular CLI](https://github.com/angular/angular-cli) versão 19.2.19.
 
-## Meus Comandos
+## Comandos básicos
 
 ```bash
 # projeto criado como firebase hosting
@@ -24,6 +24,12 @@ firebase deploy
 
 #iniciar processo
 npm start
+
+# parar processo
+q + enter
+
+# ajuda
+h + enter
 
 # matar processo
 npx kill-port 4200
