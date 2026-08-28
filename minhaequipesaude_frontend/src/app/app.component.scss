@@ -1,8 +1,27 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #061e88 0%, #3e5bf0 100%);
+  position: relative;
+  background: radial-gradient(circle at 90% 85%, rgb(0, 138, 244) 0%, rgb(23, 61, 183) 38%, rgb(23, 61, 183) 100%);
+  overflow-x: hidden;
+  isolation: isolate;
+}
+
+.app-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.24;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: -1; 
 }
 
 .main-content {
