@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser, ViewportScroller } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Endereco } from './models/endereco.model';
@@ -7,6 +7,7 @@ import { ProfissionaisService } from '../profissionais/services/profissionais.se
 import { Profissional } from '../profissionais/models/profissional.model'; // Importar
 import { ProfissionalDetalhesComponent } from '../profissional-detalhes/profissional-detalhes.component'; // Importar
 import { finalize, Observable, of, shareReplay, Subscription, tap } from 'rxjs';
+import { FloatButtonComponent } from '../../components/float-button/float-button.component';
 
 @Component({
   selector: 'app-enderecos',
@@ -14,7 +15,8 @@ import { finalize, Observable, of, shareReplay, Subscription, tap } from 'rxjs';
   imports: [
     CommonModule,
     FormsModule,
-    ProfissionalDetalhesComponent
+    ProfissionalDetalhesComponent,
+    FloatButtonComponent
   ],
   templateUrl: './enderecos.component.html',
   styleUrl: './enderecos.component.scss'
@@ -46,6 +48,8 @@ export class EnderecosComponent implements OnInit {
   @ViewChild('ruasList') ruasListElement!: ElementRef<HTMLDivElement>;
   private scrollPosicaoSalva: number = 0;
 
+  posicaoScroll: number = 0;
+  esconder: boolean = true;
 
   private sub!: Subscription;
 
@@ -53,6 +57,20 @@ export class EnderecosComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregarDadosIniciais();
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    this.posicaoScroll = window.scrollY || document.documentElement.scrollTop;
+    this.esconder = this.posicaoScroll <= 150;
+  }
+
+  topoPagina(): void {
+    sessionStorage.setItem(this.SCROLL_KEY, JSON.stringify(0));
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 
   private carregarDadosIniciais(): void {

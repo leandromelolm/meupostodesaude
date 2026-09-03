@@ -5,7 +5,7 @@
 }
 
 .search-container {
-  margin: 1.0rem 1.0rem;
+  margin: 1.0rem 0;
   text-align: center;
 }
 
@@ -16,6 +16,7 @@
     /* Compatibilidade para WebKit / Chrome e padrão */
     width: -webkit-fill-available;
     width: stretch;
+    margin: 2.0rem 1.0rem 1.0rem 1.0rem;
   }
 
   .ruas-list {
@@ -222,8 +223,8 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  max-height: 900px;
-  min-height: 600px;
+  // max-height: 900px;
+  // min-height: 600px;
   overflow-y: auto;
 }
 
